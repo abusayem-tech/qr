@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI QR Code Generator</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Inter Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- QRious Library CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-center items-center h-16">
+                <h1 class="text-2xl font-bold text-gray-900">AI QR Code Generator</h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Left Column - Controls Panel -->
+            <div class="bg-white rounded-lg shadow-sm border p-6 space-y-6">
+                
+                <!-- Data Input Section -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-gray-900">Enter Data</h2>
+                    <div>
+                        <label for="qr-data" class="block text-sm font-medium text-gray-700 mb-2">
+                            URL or Text to Encode
+                        </label>
+                        <textarea 
+                            id="qr-data" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                            placeholder="Enter URL or text to generate QR code..."
+                            rows="3">https://github.com</textarea>
+                    </div>
+                </div>
+
+                <!-- Colors Section -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-gray-900">Colors</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="foreground-color" class="block text-sm font-medium text-gray-700 mb-2">
+                                Foreground Color
+                            </label>
+                            <div class="flex items-center space-x-2">
+                                <input 
+                                    type="color" 
+                                    id="foreground-color" 
+                                    value="#000000"
+                                    class="w-12 h-10 rounded border border-gray-300 cursor-pointer">
+                                <span id="foreground-hex" class="text-sm text-gray-600 font-mono">#000000</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="background-color" class="block text-sm font-medium text-gray-700 mb-2">
+                                Background Color
+                            </label>
+                            <div class="flex items-center space-x-2">
+                                <input 
+                                    type="color" 
+                                    id="background-color" 
+                                    value="#ffffff"
+                                    class="w-12 h-10 rounded border border-gray-300 cursor-pointer">
+                                <span id="background-hex" class="text-sm text-gray-600 font-mono">#ffffff</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sizing Section -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-gray-900">Sizing</h2>
+                    <div>
+                        <label for="qr-size" class="block text-sm font-medium text-gray-700 mb-2">
+                            Size: <span id="size-value" class="font-mono">300px</span>
+                        </label>
+                        <input 
+                            type="range" 
+                            id="qr-size" 
+                            min="100" 
+                            max="1000" 
+                            value="300"
+                            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Error Correction Section -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-gray-900">Error Correction</h2>
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <input 
+                                type="radio" 
+                                id="error-low" 
+                                name="error-correction" 
+                                value="L"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                            <label for="error-low" class="ml-3 block text-sm font-medium text-gray-700">
+                                Low (~7% recovery)
+                            </label>
+                        </div>
+                        <div class="flex items-center">
+                            <input 
+                                type="radio" 
+                                id="error-medium" 
+                                name="error-correction" 
+                                value="M"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                            <label for="error-medium" class="ml-3 block text-sm font-medium text-gray-700">
+                                Medium (~15% recovery)
+                            </label>
+                        </div>
+                        <div class="flex items-center">
+                            <input 
+                                type="radio" 
+                                id="error-quartile" 
+                                name="error-correction" 
+                                value="Q"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                            <label for="error-quartile" class="ml-3 block text-sm font-medium text-gray-700">
+                                Quartile (~25% recovery)
+                            </label>
+                        </div>
+                        <div class="flex items-center">
+                            <input 
+                                type="radio" 
+                                id="error-high" 
+                                name="error-correction" 
+                                value="H"
+                                checked
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                            <label for="error-high" class="ml-3 block text-sm font-medium text-gray-700">
+                                High (~30% recovery)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logo Section -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-gray-900">Logo Integration</h2>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Upload Logo
+                            </label>
+                            <input 
+                                type="file" 
+                                id="logo-upload" 
+                                accept="image/*"
+                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        </div>
+                        
+                        <div id="logo-options" class="hidden space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Logo Shape</label>
+                                <div class="flex space-x-4">
+                                    <div class="flex items-center">
+                                        <input 
+                                            type="radio" 
+                                            id="logo-square" 
+                                            name="logo-shape" 
+                                            value="square"
+                                            checked
+                                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                        <label for="logo-square" class="ml-2 block text-sm font-medium text-gray-700">Square</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input 
+                                            type="radio" 
+                                            id="logo-circle" 
+                                            name="logo-shape" 
+                                            value="circle"
+                                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                        <label for="logo-circle" class="ml-2 block text-sm font-medium text-gray-700">Circle</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button 
+                                id="clear-logo" 
+                                class="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500">
+                                Clear Logo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Styling Section -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-gray-900">Advanced Styling</h2>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <label for="dot-style" class="block text-sm font-medium text-gray-700 mb-2">
+                                Dot Style
+                            </label>
+                            <select 
+                                id="dot-style" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="square">Square</option>
+                                <option value="rounded">Rounded</option>
+                                <option value="dots">Dots</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="eye-style" class="block text-sm font-medium text-gray-700 mb-2">
+                                Eye Style
+                            </label>
+                            <select 
+                                id="eye-style" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="square">Square</option>
+                                <option value="rounded">Rounded</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column - Preview Panel -->
+            <div class="bg-white rounded-lg shadow-sm border p-6">
+                <div class="flex flex-col items-center space-y-6">
+                    <h2 class="text-lg font-semibold text-gray-900">Preview</h2>
+                    
+                    <!-- QR Code Container -->
+                    <div id="qr-container" class="flex items-center justify-center bg-gray-50 rounded-lg p-8 min-h-[320px]">
+                        <canvas id="qr-canvas" class="max-w-full h-auto border rounded"></canvas>
+                    </div>
+
+                    <!-- Download Section -->
+                    <div class="w-full space-y-4">
+                        <h3 class="text-md font-semibold text-gray-900 text-center">Download QR Code</h3>
+                        
+                        <div class="flex flex-wrap justify-center gap-2">
+                            <button 
+                                id="download-png" 
+                                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
+                                PNG
+                            </button>
+                            <button 
+                                id="download-jpeg" 
+                                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium">
+                                JPEG
+                            </button>
+                            <button 
+                                id="download-svg" 
+                                class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm font-medium">
+                                SVG
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-center items-center h-16">
+                <p class="text-sm text-gray-500">
+                    Built with ❤️ using Tailwind CSS and QRious
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global variables
+        let qr = null;
+        let currentLogo = null;
+        let logoShape = 'square';
+
+        // Initialize QR code generator
+        function initQR() {
+            const canvas = document.getElementById('qr-canvas');
+            qr = new QRious({
+                element: canvas,
+                size: 300,
+                value: 'https://github.com',
+                foreground: '#000000',
+                background: '#ffffff',
+                level: 'H'
+            });
+        }
+
+        // Update QR code with current settings
+        function updateQR() {
+            if (!qr) return;
+
+            const data = document.getElementById('qr-data').value || 'https://github.com';
+            const size = parseInt(document.getElementById('qr-size').value);
+            const foregroundColor = document.getElementById('foreground-color').value;
+            const backgroundColor = document.getElementById('background-color').value;
+            const errorCorrection = document.querySelector('input[name="error-correction"]:checked').value;
+
+            // Update QR code properties
+            qr.set({
+                value: data,
+                size: size,
+                foreground: foregroundColor,
+                background: backgroundColor,
+                level: errorCorrection
+            });
+
+            // Add logo if present
+            if (currentLogo) {
+                addLogoToQR();
+            }
+        }
+
+        // Add logo to QR code
+        function addLogoToQR() {
+            const canvas = document.getElementById('qr-canvas');
+            const ctx = canvas.getContext('2d');
+            const logoSize = Math.min(canvas.width, canvas.height) * 0.2; // 20% of QR size
+            const x = (canvas.width - logoSize) / 2;
+            const y = (canvas.height - logoSize) / 2;
+
+            // Create a temporary canvas for logo processing
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = logoSize;
+            tempCanvas.height = logoSize;
+
+            // Draw logo with appropriate shape
+            if (logoShape === 'circle') {
+                // Create circular clipping path
+                tempCtx.beginPath();
+                tempCtx.arc(logoSize/2, logoSize/2, logoSize/2, 0, 2 * Math.PI);
+                tempCtx.closePath();
+                tempCtx.clip();
+            }
+
+            // Draw the logo
+            tempCtx.drawImage(currentLogo, 0, 0, logoSize, logoSize);
+
+            // Add white background behind logo for better visibility
+            const bgPadding = 10;
+            ctx.fillStyle = document.getElementById('background-color').value;
+            ctx.fillRect(x - bgPadding, y - bgPadding, logoSize + (bgPadding * 2), logoSize + (bgPadding * 2));
+
+            // Draw the processed logo onto the main canvas
+            ctx.drawImage(tempCanvas, x, y);
+        }
+
+        // Handle logo upload
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        currentLogo = img;
+                        document.getElementById('logo-options').classList.remove('hidden');
+                        updateQR();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Clear logo
+        function clearLogo() {
+            currentLogo = null;
+            document.getElementById('logo-upload').value = '';
+            document.getElementById('logo-options').classList.add('hidden');
+            updateQR();
+        }
+
+        // Download functions
+        function downloadPNG() {
+            const canvas = document.getElementById('qr-canvas');
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function downloadJPEG() {
+            const canvas = document.getElementById('qr-canvas');
+            const link = document.createElement('a');
+            link.download = 'qrcode.jpg';
+            link.href = canvas.toDataURL('image/jpeg', 0.9);
+            link.click();
+        }
+
+        function downloadSVG() {
+            // Create SVG version of QR code
+            const data = document.getElementById('qr-data').value || 'https://github.com';
+            const size = parseInt(document.getElementById('qr-size').value);
+            const foregroundColor = document.getElementById('foreground-color').value;
+            const backgroundColor = document.getElementById('background-color').value;
+            const errorCorrection = document.querySelector('input[name="error-correction"]:checked').value;
+
+            const tempQR = new QRious({
+                size: size,
+                value: data,
+                foreground: foregroundColor,
+                background: backgroundColor,
+                level: errorCorrection
+            });
+
+            const svg = tempQR.toDataURL('image/svg+xml');
+            const link = document.createElement('a');
+            link.download = 'qrcode.svg';
+            link.href = svg;
+            link.click();
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize QR code
+            initQR();
+
+            // Data input
+            document.getElementById('qr-data').addEventListener('input', updateQR);
+
+            // Color inputs
+            document.getElementById('foreground-color').addEventListener('input', function(e) {
+                document.getElementById('foreground-hex').textContent = e.target.value;
+                updateQR();
+            });
+
+            document.getElementById('background-color').addEventListener('input', function(e) {
+                document.getElementById('background-hex').textContent = e.target.value;
+                updateQR();
+            });
+
+            // Size slider
+            document.getElementById('qr-size').addEventListener('input', function(e) {
+                document.getElementById('size-value').textContent = e.target.value + 'px';
+                updateQR();
+            });
+
+            // Error correction radio buttons
+            document.querySelectorAll('input[name="error-correction"]').forEach(function(radio) {
+                radio.addEventListener('change', updateQR);
+            });
+
+            // Logo upload
+            document.getElementById('logo-upload').addEventListener('change', handleLogoUpload);
+            
+            // Logo shape radio buttons
+            document.querySelectorAll('input[name="logo-shape"]').forEach(function(radio) {
+                radio.addEventListener('change', function(e) {
+                    logoShape = e.target.value;
+                    if (currentLogo) updateQR();
+                });
+            });
+
+            // Clear logo button
+            document.getElementById('clear-logo').addEventListener('click', clearLogo);
+
+            // Style selects (Note: QRious library has limited styling options)
+            document.getElementById('dot-style').addEventListener('change', function() {
+                // QRious doesn't support different dot styles, but we keep the UI for potential future enhancement
+                updateQR();
+            });
+
+            document.getElementById('eye-style').addEventListener('change', function() {
+                // QRious doesn't support different eye styles, but we keep the UI for potential future enhancement
+                updateQR();
+            });
+
+            // Download buttons
+            document.getElementById('download-png').addEventListener('click', downloadPNG);
+            document.getElementById('download-jpeg').addEventListener('click', downloadJPEG);
+            document.getElementById('download-svg').addEventListener('click', downloadSVG);
+
+            // Generate initial QR code
+            updateQR();
+        });
+    </script>
+</body>
+</html>
