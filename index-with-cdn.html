@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Studio - Advanced QR Code Generator</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Create professional QR codes with advanced customization options. Support for logos, gradients, multiple data types, and bulk generation. Free online QR code generator.">
+    <meta name="keywords" content="QR code, QR generator, custom QR codes, bulk QR codes, WiFi QR, vCard QR, QR with logo, gradient QR codes">
+    <meta name="author" content="QR Studio">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://qr-studio.vercel.app/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://qr-studio.vercel.app/">
+    <meta property="og:title" content="QR Studio - Advanced QR Code Generator">
+    <meta property="og:description" content="Create professional QR codes with advanced customization options. Support for logos, gradients, multiple data types, and bulk generation.">
+    <meta property="og:image" content="https://qr-studio.vercel.app/og-image.png">
+    <meta property="og:site_name" content="QR Studio">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://qr-studio.vercel.app/">
+    <meta property="twitter:title" content="QR Studio - Advanced QR Code Generator">
+    <meta property="twitter:description" content="Create professional QR codes with advanced customization options. Support for logos, gradients, multiple data types, and bulk generation.">
+    <meta property="twitter:image" content="https://qr-studio.vercel.app/og-image.png">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="QR Studio">
+    
+    <!-- Performance Hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+    <!-- Tailwind CSS with custom config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'pulse-glow': 'pulseGlow 2s infinite'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- QR Code Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6); }
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .dark .glass {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .gradient-border {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4);
+            padding: 2px;
+            border-radius: 12px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 3px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        .dark .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 min-h-screen transition-colors duration-300">
+    
+    <!-- Header with Theme Toggle -->
+    <header class="glass sticky top-0 z-50 border-b border-white/20 dark:border-gray-700/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-qrcode text-white text-sm"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-900 dark:text-white">QR Studio</h1>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-white/20 dark:bg-gray-800/50 backdrop-blur-sm hover:bg-white/30 dark:hover:bg-gray-700/50 transition-all duration-200">
+                        <i class="fas fa-moon text-gray-700 dark:text-yellow-400 dark:hidden"></i>
+                        <i class="fas fa-sun text-yellow-500 hidden dark:block"></i>
+                    </button>
+                    <button id="presets-btn" class="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium transition-colors duration-200">
+                        <i class="fas fa-palette mr-2"></i>Presets
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            
+            <!-- Left Panel - Controls -->
+            <div class="xl:col-span-1 space-y-6">
+                
+                <!-- Data Input Card -->
+                <div class="glass rounded-xl p-6 animate-fade-in">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <i class="fas fa-edit mr-2 text-primary-500"></i>
+                        Content
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Data Type
+                            </label>
+                            <select id="data-type" class="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-200">
+                                <option value="text">Text/URL</option>
+                                <option value="wifi">WiFi Network</option>
+                                <option value="vcard">Contact (vCard)</option>
+                                <option value="email">Email</option>
+                                <option value="sms">SMS</option>
+                                <option value="phone">Phone Number</option>
+                            </select>
+                        </div>
+                        
+                        <div id="text-input" class="input-section">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                URL or Text
+                            </label>
+                            <textarea id="qr-data" class="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none transition-all duration-200" rows="3" placeholder="Enter your content here...">https://github.com</textarea>
+                        </div>
+                        
+                        <!-- WiFi Input -->
+                        <div id="wifi-input" class="input-section hidden space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Network Name (SSID)</label>
+                                <input type="text" id="wifi-ssid" class="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="WiFi Network Name">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                                <input type="password" id="wifi-password" class="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="WiFi Password">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Security</label>
+                                <select id="wifi-security" class="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                    <option value="WPA">WPA/WPA2</option>
+                                    <option value="WEP">WEP</option>
+                                    <option value="nopass">Open</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact Input -->
+                        <div id="vcard-input" class="input-section hidden space-y-3">
+                            <div class="grid grid-cols-2 gap-3">
+                                <input type="text" id="vcard-firstname" placeholder="First Name" class="px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                <input type="text" id="vcard-lastname" placeholder="Last Name" class="px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            </div>
+                            <input type="tel" id="vcard-phone" placeholder="Phone Number" class="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            <input type="email" id="vcard-email" placeholder="Email Address" class="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            <input type="text" id="vcard-organization" placeholder="Organization" class="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Styling Card -->
+                <div class="glass rounded-xl p-6 animate-fade-in">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <i class="fas fa-palette mr-2 text-primary-500"></i>
+                        Design
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Colors -->
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Colors</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-sm text-gray-600 dark:text-gray-400">Foreground</label>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="color" id="foreground-color" value="#000000" class="w-10 h-10 rounded-lg border-2 border-gray-300 dark:border-gray-600 cursor-pointer">
+                                        <span id="foreground-hex" class="text-xs font-mono text-gray-500">#000000</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <label class="text-sm text-gray-600 dark:text-gray-400">Background</label>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="color" id="background-color" value="#ffffff" class="w-10 h-10 rounded-lg border-2 border-gray-300 dark:border-gray-600 cursor-pointer">
+                                        <span id="background-hex" class="text-xs font-mono text-gray-500">#ffffff</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <label class="text-sm text-gray-600 dark:text-gray-400">Enable Gradient</label>
+                                    <input type="checkbox" id="gradient-enabled" class="rounded border-gray-300 dark:border-gray-600 text-primary-500 focus:ring-primary-500">
+                                </div>
+                                <div id="gradient-controls" class="hidden space-y-2">
+                                    <input type="color" id="gradient-color" value="#3b82f6" class="w-full h-8 rounded-lg border-2 border-gray-300 dark:border-gray-600">
+                                    <input type="range" id="gradient-angle" min="0" max="360" value="45" class="w-full">
+                                    <span class="text-xs text-gray-500">Angle: <span id="gradient-angle-value">45°</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Size & Error Correction -->
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Size & Quality</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                                        Size: <span id="size-value" class="font-mono">300px</span>
+                                    </label>
+                                    <input type="range" id="qr-size" min="100" max="1000" value="300" class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">Error Correction</label>
+                                    <select id="error-correction" class="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg">
+                                        <option value="L">Low (~7%)</option>
+                                        <option value="M">Medium (~15%)</option>
+                                        <option value="Q">Quartile (~25%)</option>
+                                        <option value="H" selected>High (~30%)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Style Options -->
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Style</h3>
+                            <div class="grid grid-cols-3 gap-2 mb-3">
+                                <button class="style-preset p-3 rounded-lg border-2 border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400" data-style="square">
+                                    <i class="fas fa-stop"></i>
+                                    <div class="text-xs mt-1">Square</div>
+                                </button>
+                                <button class="style-preset p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-primary-500 transition-colors" data-style="rounded">
+                                    <i class="fas fa-circle"></i>
+                                    <div class="text-xs mt-1">Rounded</div>
+                                </button>
+                                <button class="style-preset p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-primary-500 transition-colors" data-style="dots">
+                                    <i class="fas fa-braille"></i>
+                                    <div class="text-xs mt-1">Dots</div>
+                                </button>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <label class="text-sm text-gray-600 dark:text-gray-400">Margin</label>
+                                <input type="range" id="qr-margin" min="0" max="10" value="4" class="w-20">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logo Card -->
+                <div class="glass rounded-xl p-6 animate-fade-in">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <i class="fas fa-image mr-2 text-primary-500"></i>
+                        Logo
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <input type="file" id="logo-upload" accept="image/*" class="hidden">
+                            <button onclick="document.getElementById('logo-upload').click()" class="w-full p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-primary-500 transition-colors duration-200 text-center">
+                                <i class="fas fa-upload text-2xl text-gray-400 mb-2"></i>
+                                <div class="text-sm text-gray-600 dark:text-gray-400">Click to upload logo</div>
+                            </button>
+                        </div>
+                        
+                        <div id="logo-controls" class="hidden space-y-3">
+                            <div>
+                                <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                                    Size: <span id="logo-size-value">20%</span>
+                                </label>
+                                <input type="range" id="logo-size" min="5" max="40" value="20" class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">Shape</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button class="logo-shape p-2 border-2 border-primary-500 bg-primary-50 dark:bg-primary-900/20 rounded-lg text-primary-600" data-shape="square">
+                                        <i class="fas fa-square"></i> Square
+                                    </button>
+                                    <button class="logo-shape p-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-primary-500 transition-colors" data-shape="circle">
+                                        <i class="fas fa-circle"></i> Circle
+                                    </button>
+                                </div>
+                            </div>
+                            <button id="remove-logo" class="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
+                                <i class="fas fa-trash mr-2"></i>Remove Logo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Panel - Preview -->
+            <div class="xl:col-span-1 flex flex-col">
+                <div class="glass rounded-xl p-8 flex-1 flex flex-col items-center justify-center animate-slide-up">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
+                        <i class="fas fa-eye mr-2 text-primary-500"></i>
+                        Live Preview
+                    </h2>
+                    
+                    <div id="qr-container" class="relative">
+                        <div id="loading-spinner" class="hidden absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-900/80 rounded-lg">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+                        </div>
+                        <canvas id="qr-canvas" class="max-w-full h-auto rounded-lg shadow-lg animate-pulse-glow"></canvas>
+                    </div>
+                    
+                    <div id="qr-info" class="mt-4 text-center text-sm text-gray-500 dark:text-gray-400 space-y-1">
+                        <div>Size: <span id="info-size">300×300</span></div>
+                        <div>Data: <span id="info-length">0 characters</span></div>
+                        <div>Version: <span id="info-version">1</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Export & Tools -->
+            <div class="xl:col-span-1 space-y-6">
+                
+                <!-- Export Card -->
+                <div class="glass rounded-xl p-6 animate-fade-in">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <i class="fas fa-download mr-2 text-primary-500"></i>
+                        Export
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Export Size</label>
+                            <select id="export-size" class="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg">
+                                <option value="300">300×300 (Small)</option>
+                                <option value="600">600×600 (Medium)</option>
+                                <option value="1000">1000×1000 (Large)</option>
+                                <option value="2000">2000×2000 (HD)</option>
+                                <option value="4000">4000×4000 (4K)</option>
+                                <option value="custom">Custom Size</option>
+                            </select>
+                        </div>
+                        
+                        <div id="custom-size" class="hidden grid grid-cols-2 gap-2">
+                            <input type="number" id="custom-width" placeholder="Width" min="100" max="5000" class="px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg">
+                            <input type="number" id="custom-height" placeholder="Height" min="100" max="5000" class="px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-3">
+                            <button id="download-png" class="px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-all duration-200 flex items-center justify-center">
+                                <i class="fas fa-file-image mr-2"></i>PNG
+                            </button>
+                            <button id="download-jpg" class="px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-all duration-200 flex items-center justify-center">
+                                <i class="fas fa-file-image mr-2"></i>JPG
+                            </button>
+                        </div>
+                        
+                        <button id="download-svg" class="w-full px-4 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-medium transition-all duration-200 flex items-center justify-center">
+                            <i class="fas fa-vector-square mr-2"></i>Download SVG
+                        </button>
+                        
+                        <div class="pt-2 border-t border-gray-200 dark:border-gray-700">
+                            <button id="bulk-generate" class="w-full px-4 py-3 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white rounded-lg font-medium transition-all duration-200 flex items-center justify-center">
+                                <i class="fas fa-layer-group mr-2"></i>Bulk Generate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="glass rounded-xl p-6 animate-fade-in">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <i class="fas fa-bolt mr-2 text-primary-500"></i>
+                        Quick Actions
+                    </h2>
+                    
+                    <div class="space-y-3">
+                        <button id="save-preset" class="w-full px-4 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-medium transition-colors flex items-center justify-center">
+                            <i class="fas fa-save mr-2"></i>Save as Preset
+                        </button>
+                        
+                        <button id="reset-all" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg font-medium transition-colors flex items-center justify-center">
+                            <i class="fas fa-undo mr-2"></i>Reset All
+                        </button>
+                        
+                        <button id="share-link" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg font-medium transition-colors flex items-center justify-center">
+                            <i class="fas fa-share mr-2"></i>Share Config
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="glass rounded-xl p-6 animate-fade-in">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <i class="fas fa-chart-bar mr-2 text-primary-500"></i>
+                        Statistics
+                    </h2>
+                    
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div class="p-3 bg-white/30 dark:bg-gray-800/30 rounded-lg">
+                            <div class="text-2xl font-bold text-primary-500" id="stat-generated">0</div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400">Generated</div>
+                        </div>
+                        <div class="p-3 bg-white/30 dark:bg-gray-800/30 rounded-lg">
+                            <div class="text-2xl font-bold text-green-500" id="stat-downloaded">0</div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400">Downloaded</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- Presets Modal -->
+    <div id="presets-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass rounded-xl max-w-md w-full p-6 max-h-[80vh] overflow-y-auto custom-scrollbar">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Style Presets</h3>
+                <button id="close-presets" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="presets-grid" class="grid grid-cols-2 gap-3">
+                <!-- Presets will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Generate Modal -->
+    <div id="bulk-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass rounded-xl max-w-lg w-full p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Bulk Generate</h3>
+                <button id="close-bulk" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Enter multiple URLs/texts (one per line)
+                    </label>
+                    <textarea id="bulk-input" class="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none" rows="5" placeholder="https://example1.com
+https://example2.com
+Text for QR 3"></textarea>
+                </div>
+                <button id="generate-bulk" class="w-full px-4 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium transition-colors">
+                    <i class="fas fa-magic mr-2"></i>Generate All QR Codes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2"></div>
+
+    <!-- Fallback for JavaScript disabled -->
+    <noscript>
+        <div class="fixed inset-0 bg-red-600 flex items-center justify-center z-50">
+            <div class="text-center text-white p-8">
+                <h1 class="text-3xl font-bold mb-4">JavaScript Required</h1>
+                <p class="text-lg mb-4">QR Studio requires JavaScript to function properly.</p>
+                <p>Please enable JavaScript in your browser and refresh the page.</p>
+            </div>
+        </div>
+    </noscript>
+
+    <script src="app.js"></script>
+    
+    <!-- Debugging script for development -->
+    <script>
+        // Add development helpers
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('🔧 Development mode detected');
+            
+            // Log all network requests
+            const originalFetch = window.fetch;
+            window.fetch = function(...args) {
+                console.log('🌐 Fetch request:', args[0]);
+                return originalFetch.apply(this, arguments);
+            };
+            
+            // Log when external scripts load
+            const originalAppendChild = document.head.appendChild;
+            document.head.appendChild = function(child) {
+                if (child.tagName === 'SCRIPT' && child.src) {
+                    console.log('📜 Loading script:', child.src);
+                    child.addEventListener('load', () => {
+                        console.log('✅ Script loaded:', child.src);
+                    });
+                    child.addEventListener('error', () => {
+                        console.error('❌ Script failed:', child.src);
+                    });
+                }
+                return originalAppendChild.call(this, child);
+            };
+        }
+    </script>
+</body>
+</html>

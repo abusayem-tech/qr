@@ -1,0 +1,244 @@
+{
+  "demoConfigurations": [
+    {
+      "name": "Business Card",
+      "description": "Professional contact information with logo",
+      "dataType": "vcard",
+      "data": {
+        "firstName": "John",
+        "lastName": "Doe",
+        "phone": "+1-555-0123",
+        "email": "john.doe@company.com",
+        "organization": "Tech Solutions Inc."
+      },
+      "colors": {
+        "foreground": "#1e40af",
+        "background": "#f8fafc"
+      },
+      "style": "rounded",
+      "size": 400,
+      "errorCorrection": "H",
+      "logo": {
+        "enabled": true,
+        "size": 20,
+        "shape": "circle"
+      }
+    },
+    {
+      "name": "WiFi Network",
+      "description": "Cafe WiFi access with custom branding",
+      "dataType": "wifi",
+      "data": {
+        "ssid": "CafeWiFi-Guest",
+        "password": "welcome2023",
+        "security": "WPA"
+      },
+      "colors": {
+        "foreground": "#059669",
+        "background": "#ecfdf5"
+      },
+      "gradient": {
+        "enabled": true,
+        "color": "#10b981",
+        "angle": 135
+      },
+      "style": "square",
+      "size": 300,
+      "errorCorrection": "M"
+    },
+    {
+      "name": "Marketing Campaign",
+      "description": "Branded QR code with gradient effects",
+      "dataType": "text",
+      "data": "https://mycompany.com/special-offer?utm_source=qr&utm_campaign=summer2024",
+      "colors": {
+        "foreground": "#7c3aed",
+        "background": "#ffffff"
+      },
+      "gradient": {
+        "enabled": true,
+        "color": "#ec4899",
+        "angle": 45
+      },
+      "style": "rounded",
+      "size": 500,
+      "errorCorrection": "H",
+      "logo": {
+        "enabled": true,
+        "size": 25,
+        "shape": "square"
+      }
+    },
+    {
+      "name": "Event Registration",
+      "description": "Conference registration with high contrast",
+      "dataType": "text",
+      "data": "https://eventbrite.com/register/tech-conference-2024",
+      "colors": {
+        "foreground": "#ffffff",
+        "background": "#111827"
+      },
+      "style": "dots",
+      "size": 600,
+      "errorCorrection": "Q",
+      "margin": 6
+    },
+    {
+      "name": "Restaurant Menu",
+      "description": "Digital menu access with warm colors",
+      "dataType": "text",
+      "data": "https://restaurant.menu/table-12",
+      "colors": {
+        "foreground": "#dc2626",
+        "background": "#fef2f2"
+      },
+      "gradient": {
+        "enabled": true,
+        "color": "#f97316",
+        "angle": 90
+      },
+      "style": "rounded",
+      "size": 350,
+      "errorCorrection": "H",
+      "logo": {
+        "enabled": true,
+        "size": 18,
+        "shape": "circle"
+      }
+    },
+    {
+      "name": "Social Media",
+      "description": "Instagram profile with modern gradients",
+      "dataType": "text",
+      "data": "https://instagram.com/myprofile",
+      "colors": {
+        "foreground": "#833ab4",
+        "background": "#ffffff"
+      },
+      "gradient": {
+        "enabled": true,
+        "color": "#fd1d1d",
+        "angle": 315
+      },
+      "style": "rounded",
+      "size": 400,
+      "errorCorrection": "M",
+      "logo": {
+        "enabled": true,
+        "size": 22,
+        "shape": "circle"
+      }
+    }
+  ],
+  "presetStyles": [
+    {
+      "name": "Minimalist",
+      "colors": ["#000000", "#ffffff"],
+      "style": "square",
+      "margin": 2
+    },
+    {
+      "name": "Ocean Breeze",
+      "colors": ["#0ea5e9", "#e0f2fe"],
+      "style": "rounded",
+      "gradient": true,
+      "gradientColor": "#0284c7",
+      "gradientAngle": 45
+    },
+    {
+      "name": "Forest Green",
+      "colors": ["#166534", "#dcfce7"],
+      "style": "square",
+      "margin": 4
+    },
+    {
+      "name": "Sunset Vibes",
+      "colors": ["#dc2626", "#fef2f2"],
+      "style": "dots",
+      "gradient": true,
+      "gradientColor": "#f97316",
+      "gradientAngle": 90
+    },
+    {
+      "name": "Purple Dreams",
+      "colors": ["#7c3aed", "#f3e8ff"],
+      "style": "rounded",
+      "gradient": true,
+      "gradientColor": "#a855f7",
+      "gradientAngle": 135
+    },
+    {
+      "name": "Dark Mode",
+      "colors": ["#ffffff", "#111827"],
+      "style": "square",
+      "margin": 3
+    },
+    {
+      "name": "Corporate Blue",
+      "colors": ["#1e40af", "#dbeafe"],
+      "style": "square",
+      "margin": 4
+    },
+    {
+      "name": "Warm Autumn",
+      "colors": ["#d97706", "#fed7aa"],
+      "style": "rounded",
+      "gradient": true,
+      "gradientColor": "#ea580c",
+      "gradientAngle": 180
+    }
+  ],
+  "usageExamples": {
+    "business": [
+      "Contact cards for networking events",
+      "WiFi access for customer areas",
+      "Product information and specifications",
+      "Customer feedback and survey links",
+      "Loyalty program registration"
+    ],
+    "marketing": [
+      "Social media profile promotion",
+      "Campaign landing pages",
+      "Discount codes and offers",
+      "Event registration links",
+      "Newsletter signup forms"
+    ],
+    "personal": [
+      "Personal website or portfolio",
+      "Social media profiles",
+      "Contact information sharing",
+      "WiFi guest network access",
+      "Location sharing for meetups"
+    ],
+    "technical": [
+      "API endpoint documentation",
+      "Configuration file sharing",
+      "Development environment setup",
+      "Repository links and documentation",
+      "Troubleshooting guides"
+    ]
+  },
+  "bestPractices": {
+    "design": [
+      "Use high contrast between foreground and background",
+      "Test QR codes at different sizes before printing",
+      "Ensure logos don't obstruct critical QR code elements",
+      "Use appropriate error correction for your use case",
+      "Consider the scanning environment (lighting, distance)"
+    ],
+    "content": [
+      "Keep URLs short to reduce QR code complexity",
+      "Test links before generating final QR codes",
+      "Use URL shorteners for analytics tracking",
+      "Include UTM parameters for campaign tracking",
+      "Verify all contact information is current"
+    ],
+    "technical": [
+      "Use PNG format for print materials",
+      "Use JPG format to reduce file size",
+      "Use SVG format for scalable graphics",
+      "Higher error correction for environments with damage risk",
+      "Test scanning with multiple devices and apps"
+    ]
+  }
+}
