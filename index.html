@@ -50,9 +50,9 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: linear-gradient(135deg, var(--primary-500) 0%, var(--purple-500) 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
             min-height: 100vh;
-            color: var(--gray-900);
+            color: #111827;
             line-height: 1.5;
             transition: all 0.3s ease;
         }
@@ -62,6 +62,8 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 1rem;
+            position: relative;
+            z-index: 1;
         }
 
         @media (min-width: 640px) { .container { padding: 1.5rem; } }
@@ -81,6 +83,10 @@
         @media (min-width: 640px) {
             .sm\\:grid-2 { grid-template-columns: repeat(2, 1fr); }
             .sm\\:grid-3 { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (min-width: 1024px) {
+            .lg\\:grid-2 { grid-template-columns: repeat(2, 1fr); }
         }
 
         @media (min-width: 768px) {
@@ -130,36 +136,37 @@
             position: sticky;
             top: 0;
             z-index: 50;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
+            min-height: 60px;
         }
 
         .header-content {
             display: flex;
             align-items: center;
-            justify-content: between;
-            padding: 1rem 0;
-            gap: 1rem;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            gap: 0.5rem;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            font-size: 1.5rem;
+            gap: 0.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: white;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .logo-icon {
-            width: 2.5rem;
-            height: 2.5rem;
+            width: 2rem;
+            height: 2rem;
             background: white;
             border-radius: 0.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1rem;
         }
 
         .theme-toggle {
@@ -594,6 +601,75 @@
         .px-4 { padding-left: 1rem; padding-right: 1rem; }
         .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
 
+        /* Settings panel - scrollable left side */
+        .settings-panel {
+            height: calc(100vh - 140px);
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        /* Force 2-column layout using flexbox */
+        .main-layout {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 1.5rem !important;
+        }
+
+        @media (min-width: 1024px) {
+            .main-layout {
+                flex-direction: row !important;
+            }
+            
+            .settings-panel {
+                flex: 1 !important;
+                max-width: 50% !important;
+            }
+            
+            .preview-panel {
+                flex: 1 !important;
+                max-width: 50% !important;
+            }
+        }
+
+        .settings-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .settings-panel::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: 4px;
+        }
+
+        .settings-panel::-webkit-scrollbar-thumb {
+            background: var(--gray-400);
+            border-radius: 4px;
+        }
+
+        .settings-panel::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-500);
+        }
+
+        /* Right panel - preview and download */
+        .preview-panel {
+            position: sticky;
+            top: 1rem;
+            height: calc(100vh - 140px);
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            align-self: flex-start;
+        }
+
+        /* Debug styling for panels */
+        .settings-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(34, 197, 94, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
@@ -638,11 +714,11 @@
         <!-- Success/Error Messages -->
         <div id="message-container"></div>
 
-        <!-- Main Grid Layout -->
-        <div class="grid lg:grid-3 xl:grid-4">
+        <!-- Main Layout -->
+        <div class="main-layout">
             
-            <!-- Left Panel - Data Input -->
-            <div class="lg:col-span-1">
+            <!-- Left Panel - All Settings (Scrollable) -->
+            <div class="settings-panel">
                 <div class="card">
                     <h2 class="text-lg font-semibold mb-4">📝 Content</h2>
                     
@@ -653,13 +729,14 @@
                         <button class="tab" data-tab="vcard">vCard</button>
                         <button class="tab" data-tab="email">Email</button>
                         <button class="tab" data-tab="social">Social</button>
+                        <button class="tab" data-tab="bulk">Bulk</button>
                     </div>
 
                     <!-- Text/URL Input -->
                     <div class="tab-content active" data-content="text">
                         <div class="form-group">
                             <label for="qr-data">Text or URL:</label>
-                            <textarea id="qr-data" rows="4" placeholder="Enter your text or URL here...">https://github.com</textarea>
+                            <textarea id="qr-data" rows="4" placeholder="Enter your text or URL here..."></textarea>
                         </div>
                     </div>
 
@@ -752,27 +829,47 @@
                             <input type="text" id="social-username" placeholder="username">
                         </div>
                     </div>
-                </div>
 
-                <!-- Statistics Card -->
-                <div class="card mt-6">
-                    <h3 class="text-lg font-semibold mb-4">📊 Statistics</h3>
-                    <div class="grid grid-2 gap-4">
-                        <div class="stat-card">
-                            <div class="stat-number" id="stat-generated">0</div>
-                            <div class="stat-label">Generated</div>
+                    <!-- Bulk Generation Input -->
+                    <div class="tab-content" data-content="bulk">
+                        <div class="form-group">
+                            <label for="bulk-input">Enter multiple URLs or texts (one per line):</label>
+                            <textarea id="bulk-input" rows="8" placeholder="https://example1.com&#10;https://example2.com&#10;Third QR code text"></textarea>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="stat-downloaded">0</div>
-                            <div class="stat-label">Downloaded</div>
+                        
+                        <!-- Design Settings Preview for Bulk (Hidden but functional) -->
+                        <div class="card" style="display: none; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); padding: 1rem; margin: 1rem 0;">
+                            <h4 style="margin: 0 0 0.5rem 0; font-size: 0.875rem; color: #1d4ed8;">🎨 Design Settings Applied to All</h4>
+                            <div style="font-size: 0.75rem; color: #374151;">
+                                All QR codes will use your current design settings:
+                                <span id="bulk-design-preview" style="font-weight: 600;">Colors, Pattern, Frame, Logo</span>
+                            </div>
                         </div>
+                        
+                        <!-- Live Preview Navigation -->
+                        <div class="form-group" id="bulk-navigation" style="display: none;">
+                            <label>Live Preview Navigation:</label>
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                <button id="bulk-prev" class="btn btn-outline" style="padding: 0.5rem;">
+                                    ← Prev
+                                </button>
+                                <div style="flex: 1; text-align: center; font-weight: 600;">
+                                    <span id="bulk-current">1</span> of <span id="bulk-total">1</span>
+                                </div>
+                                <button id="bulk-next" class="btn btn-outline" style="padding: 0.5rem;">
+                                    Next →
+                                </button>
+                            </div>
+                            <div style="font-size: 0.75rem; color: #6b7280; text-align: center;">
+                                <span id="bulk-preview-text">Previewing: </span>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
-            </div>
 
-            <!-- Center Panel - Customization -->
-            <div class="lg:col-span-1">
-                <div class="card">
+                <!-- Design Settings -->
+                <div class="card mt-6">
                     <h2 class="text-lg font-semibold mb-4">🎨 Design</h2>
                     
                     <!-- Colors -->
@@ -798,8 +895,9 @@
 
                     <!-- Gradient -->
                     <div class="form-group">
-                        <label>
-                            <input type="checkbox" id="gradient-enabled"> Enable Gradient
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span>Enable Gradient</span>
+                            <input type="checkbox" id="gradient-enabled" style="margin: 0;">
                         </label>
                         <div id="gradient-controls" class="hidden mt-2">
                             <div class="color-input-group">
@@ -861,16 +959,8 @@
                         </div>
                     </div>
 
-                    <!-- Error Correction -->
-                    <div class="form-group">
-                        <label for="error-correction">Error Correction:</label>
-                        <select id="error-correction">
-                            <option value="L">Low (~7%)</option>
-                            <option value="M" selected>Medium (~15%)</option>
-                            <option value="Q">Quartile (~25%)</option>
-                            <option value="H">High (~30%)</option>
-                        </select>
-                    </div>
+                    <!-- Error Correction (Hidden - Set to High for best accuracy) -->
+                    <input type="hidden" id="error-correction" value="H">
                 </div>
 
                 <!-- Logo Upload -->
@@ -897,7 +987,7 @@
             </div>
 
             <!-- Right Panel - Preview & Export -->
-            <div class="lg:col-span-1 xl:col-span-2">
+            <div class="preview-panel">
                 <div class="card">
                     <h2 class="text-lg font-semibold mb-4">👁️ Live Preview</h2>
                     
@@ -936,69 +1026,77 @@
                         </select>
                     </div>
                     
-                    <div class="grid sm:grid-2 md:grid-3 gap-3">
-                        <button id="download-png" class="btn btn-primary">
-                            📱 PNG
-                        </button>
-                        <button id="download-jpg" class="btn btn-success">
-                            🖼️ JPG
-                        </button>
-                        <button id="download-svg" class="btn btn-secondary">
-                            📐 SVG
-                        </button>
+                    <div class="form-group">
+                        <label for="export-format">Export Format:</label>
+                        <select id="export-format">
+                            <option value="png">📱 PNG</option>
+                            <option value="jpg">🖼️ JPG</option>
+                            <option value="svg">📐 SVG</option>
+                        </select>
                     </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="card mt-6">
-                    <h3 class="text-lg font-semibold mb-4">⚡ Quick Actions</h3>
                     
-                    <div class="grid sm:grid-2 gap-3">
-                        <button id="bulk-generate" class="btn btn-outline">
-                            📋 Bulk Generate
-                        </button>
-                        <button id="save-preset" class="btn btn-outline">
-                            💾 Save Preset
-                        </button>
-                        <button id="load-preset" class="btn btn-outline">
-                            📂 Load Preset
-                        </button>
-                        <button id="reset-all" class="btn btn-secondary">
-                            🔄 Reset All
-                        </button>
-                    </div>
+                    <button id="export-button" class="btn btn-primary btn-full">
+                        💾 Export QR Code
+                    </button>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <!-- Bulk Generate Modal -->
-    <div class="modal" id="bulk-modal">
-        <div class="modal-content">
-            <h3 class="text-xl font-bold mb-4">📋 Bulk Generate QR Codes</h3>
-            
-            <div class="form-group">
-                <label for="bulk-input">Enter multiple URLs or texts (one per line):</label>
-                <textarea id="bulk-input" rows="8" placeholder="https://example1.com&#10;https://example2.com&#10;Third QR code text"></textarea>
-            </div>
-            
-            <div class="grid grid-2 gap-3">
-                <button id="bulk-cancel" class="btn btn-outline">Cancel</button>
-                <button id="bulk-confirm" class="btn btn-primary">
-                    <span class="spinner hidden" id="bulk-spinner"></span>
-                    Generate & Download
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Scripts -->
-    <script src="enhanced-qr-generator.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="working-qr-generator.js"></script>
     
     <script>
+        // Force 2-column layout
+        function forceLayout() {
+            const mainLayout = document.querySelector('.main-layout');
+            const settingsPanel = document.querySelector('.settings-panel');
+            const previewPanel = document.querySelector('.preview-panel');
+            
+            if (window.innerWidth >= 1024) {
+                mainLayout.style.display = 'flex';
+                mainLayout.style.flexDirection = 'row';
+                mainLayout.style.gap = '1.5rem';
+                
+                settingsPanel.style.flex = '1';
+                settingsPanel.style.maxWidth = '50%';
+                settingsPanel.style.height = 'calc(100vh - 140px)';
+                settingsPanel.style.overflowY = 'auto';
+                
+                previewPanel.style.flex = '1';
+                previewPanel.style.maxWidth = '50%';
+                previewPanel.style.position = 'sticky';
+                previewPanel.style.top = '1rem';
+                previewPanel.style.height = 'calc(100vh - 140px)';
+                previewPanel.style.alignSelf = 'flex-start';
+            } else {
+                mainLayout.style.display = 'flex';
+                mainLayout.style.flexDirection = 'column';
+                mainLayout.style.gap = '1.5rem';
+                
+                settingsPanel.style.flex = 'none';
+                settingsPanel.style.maxWidth = '100%';
+                settingsPanel.style.height = 'auto';
+                
+                previewPanel.style.flex = 'none';
+                previewPanel.style.maxWidth = '100%';
+                previewPanel.style.position = 'relative';
+                previewPanel.style.top = 'auto';
+                previewPanel.style.height = 'auto';
+            }
+        }
+        
+        // Apply layout on load and resize
+        window.addEventListener('load', forceLayout);
+        window.addEventListener('resize', forceLayout);
+
         class QRStudioPro {
             constructor() {
-                this.qrGenerator = new EnhancedQRGenerator();
+                this.qrGenerator = new WorkingQRGenerator();
                 this.currentLogo = null;
                 this.currentPattern = 'square';
                 this.currentFrame = 'none';
@@ -1008,6 +1106,10 @@
                 };
                 this.presets = JSON.parse(localStorage.getItem('qr_presets') || '[]');
                 
+                // Bulk navigation properties
+                this.currentBulkIndex = 0;
+                this.bulkLines = [];
+                
                 this.init();
             }
 
@@ -1015,7 +1117,15 @@
                 this.setupEventListeners();
                 this.setupTheme();
                 this.updateStats();
-                this.generateQR();
+                // Show blank canvas on load instead of generating default QR
+                const canvas = document.getElementById('qr-canvas');
+                if (canvas) {
+                    this.showBlankCanvas(canvas);
+                    this.updateInfo('', 0);
+                }
+                // Initialize bulk design preview and export button
+                this.updateBulkDesignPreview();
+                this.updateExportButton();
             }
 
             setupEventListeners() {
@@ -1068,22 +1178,26 @@
                 document.getElementById('foreground-color').addEventListener('input', (e) => {
                     document.getElementById('foreground-hex').textContent = e.target.value;
                     this.generateQR();
+                    this.updateBulkDesignPreview();
                 });
 
                 document.getElementById('background-color').addEventListener('input', (e) => {
                     document.getElementById('background-hex').textContent = e.target.value;
                     this.generateQR();
+                    this.updateBulkDesignPreview();
                 });
 
                 // Gradient controls
                 document.getElementById('gradient-enabled').addEventListener('change', (e) => {
                     document.getElementById('gradient-controls').classList.toggle('hidden', !e.target.checked);
                     this.generateQR();
+                    this.updateBulkDesignPreview();
                 });
 
                 document.getElementById('gradient-color').addEventListener('input', (e) => {
                     document.getElementById('gradient-hex').textContent = e.target.value;
                     this.generateQR();
+                    this.updateBulkDesignPreview();
                 });
 
                 // Size control
@@ -1097,8 +1211,6 @@
                     option.addEventListener('click', this.handlePatternChange.bind(this));
                 });
 
-                // Error correction
-                document.getElementById('error-correction').addEventListener('change', this.generateQR.bind(this));
 
                 // Logo upload
                 const logoUpload = document.getElementById('logo-upload');
@@ -1117,19 +1229,17 @@
                 document.getElementById('remove-logo').addEventListener('click', this.removeLogo.bind(this));
 
                 // Export buttons
-                document.getElementById('download-png').addEventListener('click', () => this.downloadQR('png'));
-                document.getElementById('download-jpg').addEventListener('click', () => this.downloadQR('jpg'));
-                document.getElementById('download-svg').addEventListener('click', () => this.downloadQR('svg'));
+                // Export button - handles both single and bulk export
+                document.getElementById('export-button').addEventListener('click', () => {
+                    const format = document.getElementById('export-format').value;
+                    this.handleExport(format);
+                });
 
-                // Quick actions
-                document.getElementById('bulk-generate').addEventListener('click', this.showBulkModal.bind(this));
-                document.getElementById('save-preset').addEventListener('click', this.savePreset.bind(this));
-                document.getElementById('load-preset').addEventListener('click', this.loadPreset.bind(this));
-                document.getElementById('reset-all').addEventListener('click', this.resetAll.bind(this));
+                // Bulk generation with live preview
+                document.getElementById('bulk-input').addEventListener('input', this.handleBulkInputChange.bind(this));
+                document.getElementById('bulk-prev').addEventListener('click', this.navigateBulkPrev.bind(this));
+                document.getElementById('bulk-next').addEventListener('click', this.navigateBulkNext.bind(this));
 
-                // Bulk modal
-                document.getElementById('bulk-cancel').addEventListener('click', this.hideBulkModal.bind(this));
-                document.getElementById('bulk-confirm').addEventListener('click', this.generateBulk.bind(this));
             }
 
             setupTheme() {
@@ -1178,7 +1288,37 @@
                     targetContent.classList.add('active');
                 }
                 
-                this.generateQR();
+                // Update export button text based on tab
+                this.updateExportButton();
+                
+                // Generate QR code for the new tab (with error handling)
+                try {
+                    this.generateQR();
+                } catch (error) {
+                    console.log('Tab switched successfully, QR generation will happen on next input');
+                }
+            }
+
+            updateExportButton() {
+                const activeTab = document.querySelector('.tab.active').dataset.tab;
+                const exportButton = document.getElementById('export-button');
+                
+                if (activeTab === 'bulk') {
+                    const count = this.bulkLines.length;
+                    if (count === 0) {
+                        exportButton.innerHTML = '💾 Export QR Code';
+                        exportButton.disabled = true;
+                    } else if (count === 1) {
+                        exportButton.innerHTML = '💾 Export QR Code';
+                        exportButton.disabled = false;
+                    } else {
+                        exportButton.innerHTML = `💾 Export All ${count} QR Codes`;
+                        exportButton.disabled = false;
+                    }
+                } else {
+                    exportButton.innerHTML = '💾 Export QR Code';
+                    exportButton.disabled = false;
+                }
             }
 
             handlePatternChange(e) {
@@ -1205,6 +1345,7 @@
                 }
                 
                 this.generateQR();
+                this.updateBulkDesignPreview();
             }
 
             handleDragOver(e) {
@@ -1247,6 +1388,7 @@
                         this.currentLogo = img;
                         document.getElementById('logo-controls').classList.remove('hidden');
                         this.generateQR();
+                        this.updateBulkDesignPreview();
                         this.showMessage('Logo uploaded successfully!', 'success');
                     };
                     img.src = e.target.result;
@@ -1259,6 +1401,7 @@
                 document.getElementById('logo-file').value = '';
                 document.getElementById('logo-controls').classList.add('hidden');
                 this.generateQR();
+                this.updateBulkDesignPreview();
                 this.showMessage('Logo removed', 'success');
             }
 
@@ -1267,50 +1410,107 @@
                 
                 switch (activeTab) {
                     case 'wifi':
+                        const ssid = document.getElementById('wifi-ssid').value.trim();
+                        const password = document.getElementById('wifi-password').value.trim();
+                        // Only generate WiFi QR if SSID is provided
+                        if (!ssid) return '';
                         return this.qrGenerator.generateWiFiData(
-                            document.getElementById('wifi-ssid').value,
-                            document.getElementById('wifi-password').value,
+                            ssid,
+                            password,
                             document.getElementById('wifi-security').value,
                             document.getElementById('wifi-hidden').checked
                         );
                         
                     case 'vcard':
+                        const firstName = document.getElementById('vcard-firstname').value.trim();
+                        const lastName = document.getElementById('vcard-lastname').value.trim();
+                        const organization = document.getElementById('vcard-organization').value.trim();
+                        const phone = document.getElementById('vcard-phone').value.trim();
+                        const email = document.getElementById('vcard-email').value.trim();
+                        const url = document.getElementById('vcard-url').value.trim();
+                        
+                        // Only generate vCard if at least one field has content
+                        if (!firstName && !lastName && !organization && !phone && !email && !url) return '';
+                        
                         return this.qrGenerator.generateVCardData({
-                            firstName: document.getElementById('vcard-firstname').value,
-                            lastName: document.getElementById('vcard-lastname').value,
-                            organization: document.getElementById('vcard-organization').value,
-                            phone: document.getElementById('vcard-phone').value,
-                            email: document.getElementById('vcard-email').value,
-                            url: document.getElementById('vcard-url').value
+                            firstName: firstName,
+                            lastName: lastName,
+                            organization: organization,
+                            phone: phone,
+                            email: email,
+                            url: url
                         });
                         
                     case 'email':
+                        const emailTo = document.getElementById('email-to').value.trim();
+                        // Only generate email QR if email address is provided
+                        if (!emailTo) return '';
                         return this.qrGenerator.generateEmailData(
-                            document.getElementById('email-to').value,
+                            emailTo,
                             document.getElementById('email-subject').value,
                             document.getElementById('email-body').value
                         );
                         
                     case 'social':
+                        const username = document.getElementById('social-username').value.trim();
+                        // Only generate social QR if username is provided
+                        if (!username) return '';
                         return this.qrGenerator.generateSocialMediaData(
                             document.getElementById('social-platform').value,
-                            document.getElementById('social-username').value
+                            username
                         );
                         
+                    case 'bulk':
+                        const bulkInput = document.getElementById('bulk-input').value.trim();
+                        // Only show preview for bulk if content exists
+                        if (!bulkInput) return '';
+                        const lines = bulkInput.split('\n').filter(line => line.trim());
+                        if (lines.length === 0) return '';
+                        // For bulk, show the currently selected line for preview
+                        if (this.bulkLines.length > 0 && this.currentBulkIndex < this.bulkLines.length) {
+                            return this.bulkLines[this.currentBulkIndex].trim();
+                        }
+                        return lines[0].trim();
+                        
                     default:
-                        return document.getElementById('qr-data').value || 'https://github.com';
+                        return document.getElementById('qr-data').value.trim();
                 }
             }
 
             generateQR() {
                 const canvas = document.getElementById('qr-canvas');
+                if (!canvas) {
+                    console.log('Canvas not found, skipping QR generation');
+                    return;
+                }
+
                 const data = this.getCurrentData();
-                const size = parseInt(document.getElementById('qr-size').value);
-                const foregroundColor = document.getElementById('foreground-color').value;
-                const backgroundColor = document.getElementById('background-color').value;
-                const errorCorrection = document.getElementById('error-correction').value;
-                const gradientEnabled = document.getElementById('gradient-enabled').checked;
-                const gradientColor = document.getElementById('gradient-color').value;
+                if (!data || data.trim() === '') {
+                    // Show blank canvas when no data
+                    this.showBlankCanvas(canvas);
+                    this.updateInfo('', 0);
+                    return;
+                }
+
+                const sizeElement = document.getElementById('qr-size');
+                const foregroundElement = document.getElementById('foreground-color');
+                const backgroundElement = document.getElementById('background-color');
+                const gradientElement = document.getElementById('gradient-enabled');
+                const gradientColorElement = document.getElementById('gradient-color');
+
+                if (!sizeElement || !foregroundElement || !backgroundElement) {
+                    console.log('Required elements not found, skipping QR generation');
+                    return;
+                }
+
+                const size = parseInt(sizeElement.value);
+                const foregroundColor = foregroundElement.value;
+                const backgroundColor = backgroundElement.value;
+                const errorCorrection = 'H'; // Always use High error correction for best accuracy
+                const gradientEnabled = gradientElement ? gradientElement.checked : false;
+                const gradientColor = gradientColorElement ? gradientColorElement.value : '#3b82f6';
+                const logoSizeElement = document.getElementById('logo-size');
+                const logoSize = logoSizeElement ? parseInt(logoSizeElement.value) : 15;
 
                 try {
                     const options = {
@@ -1322,7 +1522,8 @@
                         frame: this.currentFrame,
                         errorCorrectionLevel: errorCorrection,
                         gradient: gradientEnabled ? { color: gradientColor } : null,
-                        logo: this.currentLogo
+                        logo: this.currentLogo,
+                        logoSize: logoSize
                     };
 
                     this.qrGenerator.renderToCanvas(canvas, data, options);
@@ -1337,51 +1538,125 @@
                 }
             }
 
+            showBlankCanvas(canvas) {
+                const ctx = canvas.getContext('2d');
+                const backgroundColor = document.getElementById('background-color')?.value || '#ffffff';
+                
+                // Clear canvas with background color
+                ctx.fillStyle = backgroundColor;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Add placeholder text
+                ctx.fillStyle = '#cccccc';
+                ctx.font = '16px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('Enter content to generate QR code', canvas.width / 2, canvas.height / 2);
+            }
+
             updateInfo(data, size) {
-                document.getElementById('info-size').textContent = `${size}×${size}`;
-                document.getElementById('info-length').textContent = data.length;
+                const infoSize = document.getElementById('info-size');
+                const infoLength = document.getElementById('info-length');
+                const infoVersion = document.getElementById('info-version');
                 
-                let version = 1;
-                if (data.length > 25) version = 2;
-                if (data.length > 47) version = 3;
-                if (data.length > 77) version = 4;
-                if (data.length > 114) version = 5;
-                if (data.length > 154) version = 6;
-                if (data.length > 195) version = 7;
+                if (size === 0) {
+                    // Show empty state
+                    if (infoSize) infoSize.textContent = '--';
+                    if (infoLength) infoLength.textContent = '0';
+                    if (infoVersion) infoVersion.textContent = '--';
+                } else {
+                    if (infoSize) infoSize.textContent = `${size}×${size}`;
+                    if (infoLength) infoLength.textContent = data.length;
+                    
+                    let version = 1;
+                    if (data.length > 25) version = 2;
+                    if (data.length > 47) version = 3;
+                    if (data.length > 77) version = 4;
+                    if (data.length > 114) version = 5;
+                    if (data.length > 154) version = 6;
+                    if (data.length > 195) version = 7;
+                    
+                    if (infoVersion) infoVersion.textContent = version;
+                }
                 
-                document.getElementById('info-version').textContent = version;
+                // Update bulk design preview
+                this.updateBulkDesignPreview();
+            }
+
+            updateBulkDesignPreview() {
+                const previewElement = document.getElementById('bulk-design-preview');
+                if (!previewElement) return;
+                
+                const foregroundColor = document.getElementById('foreground-color')?.value || '#000000';
+                const backgroundColor = document.getElementById('background-color')?.value || '#ffffff';
+                const gradientEnabled = document.getElementById('gradient-enabled')?.checked;
+                const gradientColor = document.getElementById('gradient-color')?.value || '#3b82f6';
+                const hasLogo = this.currentLogo ? 'Logo' : 'No Logo';
+                
+                const designSummary = [
+                    `${foregroundColor}/${backgroundColor}`,
+                    this.currentPattern.charAt(0).toUpperCase() + this.currentPattern.slice(1),
+                    this.currentFrame !== 'none' ? this.currentFrame.charAt(0).toUpperCase() + this.currentFrame.slice(1) : 'No Frame',
+                    gradientEnabled ? 'Gradient' : '',
+                    hasLogo
+                ].filter(Boolean).join(' • ');
+                
+                previewElement.textContent = designSummary;
+            }
+
+            handleExport(format) {
+                const activeTab = document.querySelector('.tab.active').dataset.tab;
+                
+                if (activeTab === 'bulk' && this.bulkLines.length > 0) {
+                    // Handle bulk export
+                    this.downloadBulkFromTab();
+                } else {
+                    // Handle single export
+                    this.downloadQR(format);
+                }
             }
 
             downloadQR(format) {
-                const exportSize = parseInt(document.getElementById('export-size').value);
                 const data = this.getCurrentData();
+                if (!data || data.trim() === '') {
+                    this.showMessage('Please enter some content before exporting', 'warning');
+                    return;
+                }
+
+                const exportSize = parseInt(document.getElementById('export-size').value);
                 const foregroundColor = document.getElementById('foreground-color').value;
                 const backgroundColor = document.getElementById('background-color').value;
-                const errorCorrection = document.getElementById('error-correction').value;
+                const errorCorrection = 'H'; // Always use High error correction for best accuracy
                 const gradientEnabled = document.getElementById('gradient-enabled').checked;
                 const gradientColor = document.getElementById('gradient-color').value;
+                const logoSizeElement = document.getElementById('logo-size');
+                const logoSize = logoSizeElement ? parseInt(logoSizeElement.value) : 15;
 
                 try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = exportSize;
+                    canvas.height = exportSize;
+
                     const options = {
                         width: exportSize,
                         height: exportSize,
                         foreground: foregroundColor,
-                        background: backgroundColor,
+                        background: format === 'png' ? 'transparent' : backgroundColor, // Transparent for PNG
                         pattern: this.currentPattern,
                         frame: this.currentFrame,
                         errorCorrectionLevel: errorCorrection,
                         gradient: gradientEnabled ? { color: gradientColor } : null,
                         logo: this.currentLogo,
-                        format: format === 'jpg' ? 'image/jpeg' : 'image/png',
-                        quality: format === 'jpg' ? 0.9 : 1.0
+                        logoSize: logoSize,
+                        format: format
                     };
 
-                    const dataURL = this.qrGenerator.toDataURL(data, options);
-                    
-                    const link = document.createElement('a');
-                    link.href = dataURL;
-                    link.download = `qrcode-${Date.now()}.${format}`;
-                    link.click();
+                    // Generate QR code with current design settings
+                    this.generateQRWithTransparency(canvas, data, options, format);
+
+                    // Download using helper method
+                    const filename = `qrcode-${Date.now()}`;
+                    this.downloadCanvas(canvas, filename, format);
 
                     this.incrementStat('downloaded');
                     this.showMessage(`QR code downloaded as ${format.toUpperCase()}!`, 'success');
@@ -1398,6 +1673,267 @@
 
             hideBulkModal() {
                 document.getElementById('bulk-modal').classList.remove('active');
+            }
+
+            // Live bulk preview methods
+            handleBulkInputChange() {
+                const input = document.getElementById('bulk-input').value.trim();
+                const lines = input.split('\n').filter(line => line.trim());
+                
+                this.bulkLines = lines;
+                this.currentBulkIndex = 0;
+                
+                // Update export button text
+                this.updateExportButton();
+                
+                if (lines.length === 0) {
+                    // Hide navigation and show blank canvas
+                    document.getElementById('bulk-navigation').style.display = 'none';
+                    this.generateQR(); // This will show blank canvas since bulk tab is active and empty
+                } else if (lines.length === 1) {
+                    // Hide navigation for single QR, show preview
+                    document.getElementById('bulk-navigation').style.display = 'none';
+                    this.generateBulkPreview();
+                } else {
+                    // Show navigation for multiple QRs
+                    document.getElementById('bulk-navigation').style.display = 'block';
+                    this.updateBulkNavigation();
+                    this.generateBulkPreview();
+                }
+            }
+
+            navigateBulkPrev() {
+                if (this.currentBulkIndex > 0) {
+                    this.currentBulkIndex--;
+                    this.updateBulkNavigation();
+                    this.generateBulkPreview();
+                }
+            }
+
+            navigateBulkNext() {
+                if (this.currentBulkIndex < this.bulkLines.length - 1) {
+                    this.currentBulkIndex++;
+                    this.updateBulkNavigation();
+                    this.generateBulkPreview();
+                }
+            }
+
+            updateBulkNavigation() {
+                const current = this.currentBulkIndex + 1;
+                const total = this.bulkLines.length;
+                
+                document.getElementById('bulk-current').textContent = current;
+                document.getElementById('bulk-total').textContent = total;
+                
+                // Update button states
+                document.getElementById('bulk-prev').disabled = this.currentBulkIndex === 0;
+                document.getElementById('bulk-next').disabled = this.currentBulkIndex === this.bulkLines.length - 1;
+                
+                // Show current QR data being previewed
+                const currentData = this.bulkLines[this.currentBulkIndex];
+                const previewText = currentData.length > 30 ? currentData.substring(0, 30) + '...' : currentData;
+                document.getElementById('bulk-preview-text').textContent = `Previewing: ${previewText}`;
+            }
+
+            generateBulkPreview() {
+                if (this.bulkLines.length === 0) return;
+                
+                // Generate QR for current bulk index
+                const currentData = this.bulkLines[this.currentBulkIndex];
+                
+                // Temporarily set the current bulk data for preview
+                const originalData = document.getElementById('qr-data').value;
+                document.getElementById('qr-data').value = currentData;
+                
+                // Generate preview with current design settings
+                this.generateQR();
+                
+                // Restore original data
+                document.getElementById('qr-data').value = originalData;
+            }
+
+            async downloadBulkFromTab() {
+                const input = document.getElementById('bulk-input').value.trim();
+                if (!input) {
+                    this.showMessage('Please enter some data in the bulk tab', 'error');
+                    return;
+                }
+
+                const lines = input.split('\n').filter(line => line.trim());
+                if (lines.length === 0) {
+                    this.showMessage('No valid data found', 'error');
+                    return;
+                }
+
+                // Get current export settings
+                const format = document.getElementById('export-format').value;
+                const size = parseInt(document.getElementById('export-size').value);
+                
+                // Get current design settings
+                const foregroundColor = document.getElementById('foreground-color').value;
+                const backgroundColor = document.getElementById('background-color').value;
+                const errorCorrection = 'H'; // Always use High error correction for best accuracy
+                const gradientEnabled = document.getElementById('gradient-enabled').checked;
+                const gradientColor = document.getElementById('gradient-color').value;
+                const logoSizeElement = document.getElementById('logo-size');
+                const logoSize = logoSizeElement ? parseInt(logoSizeElement.value) : 15;
+
+                const designSettings = {
+                    foregroundColor,
+                    backgroundColor,
+                    errorCorrection,
+                    gradientEnabled,
+                    gradientColor,
+                    pattern: this.currentPattern,
+                    frame: this.currentFrame,
+                    logo: this.currentLogo,
+                    logoSize: logoSize
+                };
+
+                try {
+                    if (lines.length === 1) {
+                        // Single QR - download directly
+                        await this.downloadSingleQRWithDesign(lines[0].trim(), format, size, 1, designSettings);
+                        this.showMessage(`Downloaded QR code as ${format.toUpperCase()}!`, 'success');
+                    } else {
+                        // Multiple QRs - create ZIP file
+                        await this.downloadBulkAsZip(lines, format, size, designSettings);
+                        this.showMessage(`Downloaded ${lines.length} QR codes as ZIP file!`, 'success');
+                    }
+                    
+                    this.incrementStat('downloaded', lines.length);
+                } catch (error) {
+                    console.error('Bulk download error:', error);
+                    this.showMessage('Error downloading QR codes', 'error');
+                }
+            }
+
+            async downloadBulkAsZip(lines, format, size, designSettings) {
+                if (typeof JSZip === 'undefined') {
+                    // Fallback to individual downloads if JSZip not available
+                    for (let i = 0; i < lines.length; i++) {
+                        const data = lines[i].trim();
+                        if (data) {
+                            await this.downloadSingleQRWithDesign(data, format, size, i + 1, designSettings);
+                            // Small delay to prevent browser blocking
+                            await new Promise(resolve => setTimeout(resolve, 100));
+                        }
+                    }
+                    return;
+                }
+
+                const zip = new JSZip();
+                const timestamp = new Date().toISOString().replace(/[:.-]/g, '');
+
+                for (let i = 0; i < lines.length; i++) {
+                    const data = lines[i].trim();
+                    if (data) {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = size;
+                        canvas.height = size;
+
+                        const options = {
+                            width: size,
+                            height: size,
+                            foreground: designSettings.foregroundColor,
+                            background: format === 'png' ? 'transparent' : designSettings.backgroundColor,
+                            pattern: designSettings.pattern,
+                            frame: designSettings.frame,
+                            errorCorrectionLevel: designSettings.errorCorrection,
+                            gradient: designSettings.gradientEnabled ? { color: designSettings.gradientColor } : null,
+                            logo: designSettings.logo,
+                            logoSize: designSettings.logoSize,
+                            format: format
+                        };
+
+                        // Generate QR code with transparency support
+                        this.generateQRWithTransparency(canvas, data, options, format);
+
+                        // Convert canvas to blob and add to ZIP
+                        const dataURL = canvas.toDataURL(`image/${format}`, format === 'jpg' ? 0.9 : 1.0);
+                        const base64Data = dataURL.split(',')[1];
+                        
+                        const cleanData = data.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '');
+                        const filename = `qr-code-${i + 1}-${cleanData}.${format}`;
+                        
+                        zip.file(filename, base64Data, {base64: true});
+                    }
+                }
+
+                // Generate and download ZIP
+                const zipBlob = await zip.generateAsync({type: 'blob'});
+                const zipFilename = `qr-codes-${timestamp}.zip`;
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(zipBlob);
+                link.download = zipFilename;
+                link.click();
+                
+                // Clean up object URL
+                setTimeout(() => URL.revokeObjectURL(link.href), 100);
+            }
+
+            async downloadSingleQRWithDesign(data, format, size, index, designSettings) {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+
+                try {
+                    // Use the same options as the main QR generator
+                    const options = {
+                        width: size,
+                        height: size,
+                        foreground: designSettings.foregroundColor,
+                        background: designSettings.backgroundColor,
+                        pattern: designSettings.pattern,
+                        frame: designSettings.frame,
+                        errorCorrectionLevel: designSettings.errorCorrection,
+                        gradient: designSettings.gradientEnabled ? { color: designSettings.gradientColor } : null,
+                        logo: designSettings.logo,
+                        logoSize: designSettings.logoSize
+                    };
+
+                    // Generate QR code with full design settings
+                    this.qrGenerator.renderToCanvas(canvas, data, options);
+
+                    // Download with proper filename
+                    const cleanData = data.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '');
+                    const filename = `qr-code-${index}-${cleanData}`;
+                    this.downloadCanvas(canvas, filename, format);
+
+                } catch (error) {
+                    console.error(`Error generating QR ${index}:`, error);
+                    this.showMessage(`Error generating QR code ${index}`, 'error');
+                }
+            }
+
+            generateQRWithTransparency(canvas, data, options, format) {
+                if (format === 'png') {
+                    // For PNG, generate with transparent background
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Clear canvas (transparent)
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Generate QR with transparent background
+                    const transparentOptions = {...options, background: 'transparent'};
+                    this.qrGenerator.renderToCanvas(canvas, data, transparentOptions);
+                } else {
+                    // For JPG/SVG, use normal background
+                    this.qrGenerator.renderToCanvas(canvas, data, options);
+                }
+            }
+
+            downloadCanvas(canvas, filename, format) {
+                try {
+                    const link = document.createElement('a');
+                    link.href = canvas.toDataURL(`image/${format}`, format === 'jpg' ? 0.9 : 1.0);
+                    link.download = `${filename}.${format}`;
+                    link.click();
+                } catch (error) {
+                    console.error('Download error:', error);
+                    this.showMessage('Error downloading file', 'error');
+                }
             }
 
             async generateBulk() {
@@ -1577,8 +2113,11 @@
             }
 
             updateStats() {
-                document.getElementById('stat-generated').textContent = this.stats.generated;
-                document.getElementById('stat-downloaded').textContent = this.stats.downloaded;
+                const statGenerated = document.getElementById('stat-generated');
+                const statDownloaded = document.getElementById('stat-downloaded');
+                
+                if (statGenerated) statGenerated.textContent = this.stats.generated;
+                if (statDownloaded) statDownloaded.textContent = this.stats.downloaded;
             }
 
             showMessage(message, type = 'success') {
